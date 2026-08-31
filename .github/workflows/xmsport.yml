@@ -1,10 +1,8 @@
 name: 小米运动修改步数
-
 on:
   schedule:
-    - cron: "00 10 * * *"
+    - cron: "00 9 * * *"  # UTC 09:00 = 北京时间17:00
   workflow_dispatch:     # 允许手动触发，不再需要输入参数
-
 jobs:
   xmSport:
     runs-on: ubuntu-latest
@@ -66,4 +64,4 @@ jobs:
         if: always()
         run: |
           echo "当前时间: $(date "+%Y/%m/%d %H:%M:%S")"
-          echo "工作流执行状态: ${{ job.status }}" 
+          echo "工作流执行状态: ${{ job.status }}"
