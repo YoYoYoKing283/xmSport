@@ -1,7 +1,8 @@
 name: 自动同步上游仓库
+
 on:
   schedule:
-    # 每天凌晨2点执行（UTC时间，对应北京时间10点）
+    # 每天凌晨 2 点执行（UTC 时间，对应北京时间 10 点）
     - cron: '0 2 * * *'
   # 允许手动触发
   workflow_dispatch:
@@ -14,7 +15,7 @@ jobs:
   sync-upstream:
     runs-on: ubuntu-latest
     name: 同步上游仓库更新
-    # 仅在Fork仓库中运行此工作流
+    # 仅在 Fork 仓库中运行此工作流
     if: github.repository != 'chiupam/xmSport'
 
     steps:
@@ -22,7 +23,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-          # 使用默认的GITHUB_TOKEN，它对当前仓库有写权限
+          # 使用默认的 GITHUB_TOKEN，它对当前仓库有写权限
           token: ${{ github.token }}
 
       - name: 配置Git
@@ -59,13 +60,12 @@ jobs:
             echo "✅ 已成功合并上游仓库的变更"
           else
             echo "⚠️ 合并过程中可能存在冲突，尝试使用策略解决..."
-            # 尝试使用theirs策略解决冲突（接受上游更改）
+            # 尝试使用 theirs 策略解决冲突（接受上游更改）
             git merge --abort
             git merge upstream/$CURRENT_BRANCH -X theirs --no-edit
             echo "⚠️ 使用theirs合并策略完成，如有异常请手动检查"
           fi
-      
-      # ============新增这一步，丢弃上游带来workflow变更===========
+
       - name: 保留Fork自己的workflow，不跟随上游更新
         run: |
           git checkout HEAD -- .github/workflows/
@@ -83,8 +83,7 @@ jobs:
         run: |
           # 推送到当前分支
           CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
-
-          # 只推送到Fork的仓库，不尝试推送到上游仓库
+          # 只推送到 Fork 的仓库，不尝试推送到上游仓库
           if git push origin $CURRENT_BRANCH; then
             echo "✅ 已将更新推送到您的仓库"
           else
